@@ -1,0 +1,26 @@
+{
+  "name": "spotify-auth-web-api-node",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+  },
+  "keywords": [],
+  "author": "Andi <andideve0@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "query-string": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.8.3",
+    "concurrently": "^7.4.0",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.8.4"
+  }
+}
