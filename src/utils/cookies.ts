@@ -29,10 +29,10 @@ export default function setCookies(
   const accessTokenExpires = createExpires(expiresIn);
   const longExpires = longExpiresIn ? createExpires(longExpiresIn) : accessTokenExpires;
   const cookies = [`access_token=${accessToken};${OPTIONS};Expires=${accessTokenExpires}`];
-  if (refreshToken) {
+  if (refreshToken !== undefined) {
     cookies.push(`refresh_token=${refreshToken};${OPTIONS};Expires=${longExpires}`);
   }
-  if (cookiesVersion) {
+  if (cookiesVersion !== undefined) {
     cookies.push(`cookies_version=${cookiesVersion};${OPTIONS};Expires=${longExpires}`);
   }
 
