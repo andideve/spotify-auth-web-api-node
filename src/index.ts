@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import qs from 'query-string';
 import axios, { AxiosError } from 'axios';
 
-import setCookies from './utils/cookies';
+import { setCookies, getCookies } from './utils/cookies';
 import {
   UserAuthRequestQueryParameters,
   UserAuthResponseQueryParameters,
@@ -104,10 +104,11 @@ app.get('/logout', (req, res) => {
  * https://accounts.spotify.com/api/token
  */
 
+// just for test mode only, use GET.
 app.get('/refresh_token', async (req, res) => {
-  const { refresh_token } = req.query;
-  if (!(typeof refresh_token === 'string')) {
-    res.status(400).json({ message: 'Missing required parameter: refresh_token' });
+  const { refreshToken } = getCookies(req);
+  if (!refreshToken) {
+    res.status(400).json({ message: 'Refresh token is no longer available' });
     return;
   }
   const authOptions = {
@@ -118,7 +119,7 @@ app.get('/refresh_token', async (req, res) => {
     },
     form: {
       grant_type: 'refresh_token',
-      refresh_token: refresh_token,
+      refresh_token: refreshToken,
     } as RefreshAccessTokenRequestBodyParameters,
   };
   try {
