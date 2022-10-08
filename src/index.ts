@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import qs from 'query-string';
 import axios, { AxiosError } from 'axios';
 
+import setCookies from './utils/cookies';
 import {
   UserAuthRequestQueryParameters,
   UserAuthResponseQueryParameters,
@@ -21,6 +22,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const BASIC = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
 const AUTH_SCOPE = process.env.AUTH_SCOPE;
 const REDIRECT_URI = process.env.REDIRECT_URI;
+const COOKIES_VERSION = process.env.COOKIES_VERSION;
 
 const app = express();
 
@@ -73,10 +75,28 @@ app.get('/callback', async (req, res) => {
         headers: authOptions.headers,
       })
       .then((res) => res.data);
-    res.json(data);
+    setCookies(res, {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+      cookiesVersion: COOKIES_VERSION,
+      longExpiresIn: data.expires_in + 60 * 60 * 24 * 7,
+    });
+    res.json({ message: 'Success' });
   } catch (err) {
     res.status(400).json((err as AxiosError).response?.data || {});
   }
+});
+
+// just for test mode only, use GET.
+app.get('/logout', (req, res) => {
+  setCookies(res, {
+    accessToken: '',
+    refreshToken: '',
+    expiresIn: 0,
+    cookiesVersion: -1,
+  });
+  res.json({ message: 'Success' });
 });
 
 /**

@@ -29,7 +29,7 @@ interface TokenResponseBody {
   access_token: string;
   token_type: 'Bearer';
   scope: string; // A space-separated list of scopes.
-  expires_in: number; // The time period (in seconds)
+  expires_in: number; // The time period (in seconds) for which the Access Token is valid.
 }
 
 /**
