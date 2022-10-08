@@ -127,7 +127,13 @@ app.get('/refresh_token', async (req, res) => {
         headers: authOptions.headers,
       })
       .then((res) => res.data);
-    res.json(data);
+    setCookies(res, {
+      accessToken: data.access_token,
+      expiresIn: data.expires_in,
+      cookiesVersion: COOKIES_VERSION,
+      longExpiresIn: data.expires_in + 60 * 60 * 24 * 7,
+    });
+    res.json({ message: 'Success' });
   } catch (err) {
     res.status(400).json((err as AxiosError).response?.data || {});
   }

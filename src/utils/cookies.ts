@@ -4,9 +4,9 @@ const OPTIONS = 'Path=/;SameSite=Strict;Secure;HttpOnly';
 
 interface Options {
   accessToken: string;
-  refreshToken: string;
   /** Number in seconds */
   expiresIn: number;
+  refreshToken?: string;
   cookiesVersion?: string | number;
   /**
    * Number in seconds, set for `refreshToken` and `cookiesVersion`.
@@ -24,14 +24,14 @@ function createExpires(seconds: number) {
 
 export default function setCookies(
   res: Response,
-  { accessToken, refreshToken, expiresIn, cookiesVersion, longExpiresIn }: Options,
+  { accessToken, expiresIn, refreshToken, cookiesVersion, longExpiresIn }: Options,
 ) {
   const accessTokenExpires = createExpires(expiresIn);
   const longExpires = longExpiresIn ? createExpires(longExpiresIn) : accessTokenExpires;
-  const cookies = [
-    `access_token=${accessToken};${OPTIONS};Expires=${accessTokenExpires}`,
-    `refresh_token=${refreshToken};${OPTIONS};Expires=${longExpires}`,
-  ];
+  const cookies = [`access_token=${accessToken};${OPTIONS};Expires=${accessTokenExpires}`];
+  if (refreshToken) {
+    cookies.push(`refresh_token=${refreshToken};${OPTIONS};Expires=${longExpires}`);
+  }
   if (cookiesVersion) {
     cookies.push(`cookies_version=${cookiesVersion};${OPTIONS};Expires=${longExpires}`);
   }
