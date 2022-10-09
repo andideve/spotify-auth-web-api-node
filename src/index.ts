@@ -8,6 +8,7 @@ import axios, { AxiosError } from 'axios';
 import verifyLogin from './middlewares/verify-login';
 import { setCookies, getCookies } from './utils/cookies';
 import getEnv from './utils/dotenv';
+import errors from './utils/errors';
 import {
   UserAuthRequestQueryParameters,
   UserAuthResponseQueryParameters,
@@ -51,8 +52,8 @@ app.get('/login', (req, res) => {
 
 app.get('/callback', async (req, res) => {
   const { code } = req.query as Partial<UserAuthResponseQueryParameters>;
-  if (!(typeof code === 'string')) {
-    res.status(400).json({ message: 'Missing required parameter: code' });
+  if (typeof code !== 'string') {
+    res.status(400).json(errors.missingParameter('code'));
     return;
   }
   try {
@@ -63,7 +64,7 @@ app.get('/callback', async (req, res) => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       form: {
-        code: code,
+        code,
         redirect_uri: REDIRECT_URI,
         grant_type: 'authorization_code',
       } as AccessTokenRequestBodyParameters,
@@ -106,7 +107,7 @@ app.get('/logout', (req, res) => {
 app.get('/refresh_token', async (req, res) => {
   const { refreshToken } = getCookies(req);
   if (!refreshToken) {
-    res.status(400).json({ message: 'Refresh token is no longer available' });
+    res.status(400).json(errors({ message: 'Refresh token is no longer available' }));
     return;
   }
   const authOptions = {
