@@ -10,7 +10,8 @@ export interface UserAuthRequestQueryParameters {
   response_type: 'code';
   redirect_uri: string;
   state?: string;
-  scope?: string; // A space-separated list of scopes.
+  /** A space-separated list of scopes. */
+  scope?: string;
   show_dialog?: boolean;
 }
 export interface UserAuthResponseQueryParameters {
@@ -22,14 +23,17 @@ interface TokenRequestBodyParameters {
   grant_type: 'authorization_code' | 'refresh_token';
 }
 export interface TokenRequestHeaderParameters {
-  Authorization: string; // Basic <base64 encoded client_id:client_secret>
+  /** Basic \<base64 encoded client_id:client_secret> */
+  Authorization: string;
   'Content-Type': 'application/x-www-form-urlencoded';
 }
 interface TokenResponseBody {
   access_token: string;
   token_type: 'Bearer';
-  scope: string; // A space-separated list of scopes.
-  expires_in: number; // The time period (in seconds) for which the Access Token is valid.
+  /** A space-separated list of scopes. */
+  scope: string;
+  /** The time period (in seconds) for which the Access Token is valid. */
+  expires_in: number;
 }
 
 /**
